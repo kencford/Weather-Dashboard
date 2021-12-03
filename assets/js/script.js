@@ -1,65 +1,97 @@
 console.log('Javascript code starts here.');
 
-let searchHistory = [];
-let apiKey = "60e388d13d87f9eee3a6915e90a44ff7";
-let baseURL = "https://zoom.us/j/95811059840?pwd=OFVaVVRQaTdjVzYxMmdqN01wY2xoZz09"
+// Using Open Weather Map
+let OWM_apiKey = "60e388d13d87f9eee3a6915e90a44ff7";
 
-const newLocal = "search-form";
-let fromLabel = document.getElementById(newLocal);
+var dateToday = new Date();
+var urlIcon = "https://openweathermap.org/img/w/";
+var icon = "10d";
+var searchBtn = document.getElementById("search-button");
+
 let fromInput = document.getElementById("search-input");
-let currentDiv = document.getElementById("today");
-let forcastDiv = document.getElementById("forcast");
-let searchHistoryDiv = document.getElementById("history");
 
-function fetchCoordinates (city) {
-    console.log("I am in fetchCoordinates")
-    let url = `${baseURL}/geo/1.0/direct?q=${city}&limit=5&appid=${apiKey}`
-    fetch (url)
-        .then (function(response){
-            console.log(response);
-            if (!response[0]) {
-                console.log ("city not found");
-            } else {
-                //add to history
+const weatherContainer = document.getElementById("current");
+
+let cityEl = document.createElement("p");
+let bodyToday = document.createElement("div");
+let dateIcon = document.createElement("h2");
+let weatherIcon = document.createElement("img");
+let tempEl = document.createElement("p");
+let windEl = document.createElement("p");
+let humidityEl = document.createElement("p");
+let uvEl = document.createElement("p");
+
+
+function getWeather() {
+    weatherContainer.innerHTML = "";
+    let userSearch = fromInput.value;
+    let city = userSearch.split(" ").join("+");
+    var baseURL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${OWM_apiKey}&units=imperial`;
+    console.log(baseURL);
+    console.log("city: ", city);
+
+    fetch(baseURL)
+        .then(function (response) {
+            if (response.ok) {
+                response.json()
+                    .then(function (data) {
+                        weatherContainer.append(bodyToday);
+
+                        console.log(data);
+                        // city
+                        // let apiCity = ("Today's Weather in " + city);
+                        bodyToday.append(cityEl);
+                        cityEl.innerHTML = `Today's Weather in ${data.name}`;
+                        // temp
+                        bodyToday.append(tempEl);
+                        let temperature = Math.floor(data.main.temp) + " F";
+                        tempEl.append("Temp: " + temperature);
+
+                        //wind
+                        let wind = data.wind.speed;
+                        bodyToday.append(windEl);
+                        windEl.append("Wind: " + wind + " MPH");
+
+                        //humidity
+                        let humidity = data.main.humidity;
+                        bodyToday.append(humidityEl);
+                        humidityEl.append("Humidity: " + humidity + "%");
+
+                        //lat lon
+                        let lat = data.coord.lat;
+                        let lon = data.coord.lon;
+                        console.log("lat", lat);
+
+                        getUV(lat, lon);
+                        //uv index
+                    })
             }
-
         })
-        .catch (function (error){
-            console.log(error);
-        });
 }
 
-// function handleSearchSubmit (event) {
-//     console.log("in handleSearchSubmit");
-//     console.log(fromInput.value);
-//     // if (!fromInput.value) {
-//     //     return;
-//     // }
-//     // event.preventDefault();
-//     // let city = fromInput.value.trim();
-//     // fetchCoordinates(city);
-//     // fromInput.value = "";
-
-// }
-
-function handleSearchSubmit() {
-    var x = document.getElementById("search-form");
-    var text = "";
-    var i;
-    for (i = 0; i < x.length ;i++) {
-      text += x.elements[i].value + "<br>";
-    }
-    // document.getElementById("demo").innerHTML = text;
-    console.log("text ", text);
-  }
-
-  function myForm() {
-    varjsx = document.forms["myjsForm"]["city"].value;
-    if (jsx == "") {
-        alert("Please fill the Name");
-        return false;
-    }
-    console.log("city name: ", varjsx);
+function getUV(lat, lon) {
+    let uvUrl = `https://api.openweathermap.org/data/2.5/uvi?lat=${lat}&lon=${lon}&appid=${OWM_apiKey}`
+    fetch(uvUrl)
+        .then(function (response) {
+            if (response.ok) {
+                response.json()
+                    .then(function (data) {
+                        console.log(data);
+                        uvEl.innerHTML = `UV index is: ${data.value}`;
+                        bodyToday.append(uvEl);
+                    })
+                }
+            })
 }
 
-// fromLabel.addEventListener("submit", handleSearchSubmit);
+
+// const newLocal = "search-form";
+// let fromLabel = document.getElementById(newLocal);
+
+searchBtn.addEventListener("click", function (event) {
+    event.preventDefault();
+    getWeather();
+    fromInput.value = "";
+
+})
+
