@@ -20,15 +20,16 @@ let tempEl = document.createElement("p");
 let windEl = document.createElement("p");
 let humidityEl = document.createElement("p");
 let uvEl = document.createElement("p");
-
+let forecast = document.getElementById("forcast");
 
 function getWeather() {
     weatherContainer.innerHTML = "";
+    
     let userSearch = fromInput.value;
     let city = userSearch.split(" ").join("+");
+    console.log("city: ", city);
     var baseURL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${OWM_apiKey}&units=imperial`;
     console.log(baseURL);
-    console.log("city: ", city);
 
     fetch(baseURL)
         .then(function (response) {
@@ -67,6 +68,42 @@ function getWeather() {
                     })
             }
         })
+        function getFiveDay() {
+            let fiveDayURL = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${OWM_apiKey}&units=imperial`;
+            fetch(fiveDayURL)
+            .then(function (response) {
+                if (response.ok) {
+                    response.json()
+                        .then(function (data) {
+                            var getFiveData = data;
+                            getFiveData.length = 5;
+                            console.log(getFiveData);
+                        for (let i=0; i< getFiveData.length; i++) {
+                            var result = getFiveData;
+                            // var date = 
+                            // var time
+                            var weatherIcon = (result.list[i].weather[0].icon);
+                            var iconURL = (`https://openweathermap.org/img/wn/${weatherIcon}@2x.png`);
+                            var windSpeed = (`Wind Speed: ${result.list[i].wind.speed}MPH`);
+                            var humidity = (`Humidity: ${result.list[i].main.humidity}%`);
+                            var fiveDayTemp = (`Temperature: ${result.list[i].main.temp}F`);
+                            console.log(fiveDayTemp);
+                            forecast.append(
+                                `<div class="card"> 
+                                <img src="${iconURL}" />
+                                <div class="humidity">${humidity}</div>
+                                <div class="temp">${fiveDayTemp}</div>
+                                <div class="wind">${windSpeed}</div>
+                                </div>`
+                            )
+                        }
+                        })
+                    }
+                })
+        }
+        getFiveDay();
+         
+        
 }
 
 function getUV(lat, lon) {
@@ -88,8 +125,13 @@ function getUV(lat, lon) {
 // const newLocal = "search-form";
 // let fromLabel = document.getElementById(newLocal);
 
+
+
 searchBtn.addEventListener("click", function (event) {
     event.preventDefault();
+    tempEl.innerHTML = "";
+    windEl.innerHTML = "";
+    humidityEl.innerHTML = "";
     getWeather();
     fromInput.value = "";
 
