@@ -80,7 +80,7 @@ function getWeather() {
                             console.log(getFiveData);
                         for (let i=0; i< getFiveData.length; i++) {
                             var result = getFiveData;
-                            // var date = 
+                            var date = (result.list[i].dt_txt).split(" ")[0];
                             // var time
                             var weatherIcon = (result.list[i].weather[0].icon);
                             var iconURL = (`https://openweathermap.org/img/wn/${weatherIcon}@2x.png`);
@@ -90,6 +90,7 @@ function getWeather() {
                             console.log(fiveDayTemp);
                             forecast.append(
                                 `<div class="card"> 
+                                <div class="date">${date}</div>
                                 <img src="${iconURL}" />
                                 <div class="humidity">${humidity}</div>
                                 <div class="temp">${fiveDayTemp}</div>
