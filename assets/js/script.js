@@ -22,6 +22,9 @@ let humidityEl = document.createElement("p");
 let uvEl = document.createElement("p");
 let forecast = document.getElementById("forecast");
 
+var cityStorage = [];
+var cityHistoryHTML = document.getElementById("history");
+
 function getWeather() {
     weatherContainer.innerHTML = "";
 
@@ -30,6 +33,8 @@ function getWeather() {
     console.log("city: ", city);
     var baseURL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${OWM_apiKey}&units=imperial`;
     console.log(baseURL);
+
+    setHistory(userSearch);
 
     fetch(baseURL)
         .then(function (response) {
@@ -79,11 +84,14 @@ function getWeather() {
                     response.json()
                         .then(function (data) {
                             var getFiveData = data;
+                            console.log("function getFiveDay - line 87 - data: ", data);
                             getFiveData.length = 5;
-                            console.log(getFiveData);
+                            // console.log(getFiveData);
                             for (let i = 0; i < getFiveData.length; i++) {
                                 var result = getFiveData;
                                 var date = (result.list[i].dt_txt).split(" ")[0];
+
+                                console.log("date: ", date)
                                 // var time
 
                                 //ICON
@@ -151,6 +159,36 @@ function getUV(lat, lon) {
             }
         })
 }
+
+function setHistory(city) {
+    if (cityStorage.indexOf(city) >= 0) {
+        return;
+    }   
+    cityStorage.push(city);
+
+    localStorage.setItem("cities", JSON.stringify(cityStorage));
+    getHistory(city);
+}
+
+function getHistory() {
+    cityHistoryHTML.innerHTML = "";
+    var fromLocal = localStorage.getItem("cities")
+    if (fromLocal) {
+        cityStorage = JSON.parse(fromLocal);
+        console.log("cityStorage: ", cityStorage);
+    }
+    for (var i = 0; i < cityStorage.length; i++) {
+        console.log("line 180: ", i);
+        var cityBtn = document.createElement("button")
+        cityBtn.setAttribute("type", "button");
+        cityBtn.setAttribute("data-search", cityStorage[i]);
+        cityBtn.textContent = cityStorage[i];
+        cityHistoryHTML.append(cityBtn);
+    }
+    console.log("cityHistoryHTML: ", cityHistoryHTML);
+}
+
+
 
 // const newLocal = "search-form";
 // let fromLabel = document.getElementById(newLocal);
