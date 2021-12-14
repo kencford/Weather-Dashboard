@@ -82,21 +82,51 @@ function getWeather() {
                             var result = getFiveData;
                             var date = (result.list[i].dt_txt).split(" ")[0];
                             // var time
+                          
+                            //ICON
+                            var icon = document.createElement('img');
                             var weatherIcon = (result.list[i].weather[0].icon);
                             var iconURL = (`https://openweathermap.org/img/wn/${weatherIcon}@2x.png`);
+                            icon.src = iconURL;
+
+                            //WIND
+                            var wind = document.createElement('div');
                             var windSpeed = (`Wind Speed: ${result.list[i].wind.speed}MPH`);
-                            var humidity = (`Humidity: ${result.list[i].main.humidity}%`);
+                            wind.innerHTML = windSpeed;
+
+                            //HUMIDITY
+                            var percent = document.createElement('div');
+                            var humidity = (`Humidity: ${result.list[i].main.percent}%`);
+                            percent.innerHTML = humidity;
+
+
+                            //TEMP
+                            var temp = document.createElement('div');
                             var fiveDayTemp = (`Temperature: ${result.list[i].main.temp}F`);
-                            console.log(fiveDayTemp);
-                            forecast.append(
-                                `<div class="card"> 
-                                <div class="date">${date}</div>
-                                <img src="${iconURL}" />
-                                <div class="humidity">${humidity}</div>
-                                <div class="temp">${fiveDayTemp}</div>
-                                <div class="wind">${windSpeed}</div>
-                                </div>`
-                            )
+                            temp.innerHTML = fiveDayTemp;
+                            // console.log(fiveDayTemp);
+
+                            //CARD
+                            var card = document.createElement('div');
+                            card.append(icon);
+                            card.append(wind);
+                            card.append(humidity);
+                            card.append(temp);
+
+                            //CARD
+                            forecast.append(card);
+
+
+
+                            // forecast.append(
+                            //     `<div class="card"> 
+                            //     <div class="date">${date}</div>
+                            //     <img src="${iconURL}" />
+                            //     <div class="humidity">${humidity}</div>
+                            //     <div class="temp">${fiveDayTemp}</div>
+                            //     <div class="wind">${windSpeed}</div>
+                            //     </div>`
+                            // )
                         }
                         })
                     }
