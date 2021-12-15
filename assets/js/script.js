@@ -83,15 +83,22 @@ function getWeather() {
                 if (response.ok) {
                     response.json()
                         .then(function (data) {
-                            var getFiveData = data;
-                            console.log("function getFiveDay - line 87 - data: ", data);
-                            getFiveData.length = 5;
-                            // console.log(getFiveData);
-                            for (let i = 0; i < getFiveData.length; i++) {
-                                var result = getFiveData;
-                                var date = (result.list[i].dt_txt).split(" ")[0];
+                            var result = data;
+                            console.log('5-day data returned: ', result);
+                            
+                            // data contains 40 objects separated by 3 hours
+                            // need to get every 8th one (as 8 per day)
+                            // also start with 8th entry to make sure next day
+                            for (let i = 7; i < 40; i=i+8) {
+                                // var result = getFiveData;
+                                var dateRaw = result.list[i].dt_txt;
+                                // console.log("raw date: ", dateRaw);
+                                var yyyy = dateRaw.substr(0,4);
+                                var mm = dateRaw.substr(5,2);
+                                var dd = dateRaw.substr(8,2)
+                                var date = mm + '-' + dd + '-' + yyyy;
+                                console.log("date: ", date);
 
-                                console.log("date: ", date)
                                 // var time
 
                                 //ICON
