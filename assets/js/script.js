@@ -85,27 +85,37 @@ function getWeather() {
                         .then(function (data) {
                             var result = data;
                             console.log('5-day data returned: ', result);
-                            
+
                             // data contains 40 objects separated by 3 hours
                             // need to get every 8th one (as 8 per day)
-                            // also start with 8th entry to make sure next day
-                            for (let i = 7; i < 40; i=i+8) {
+                            // also start with 9th entry to make sure next day
+                            for (let i = 7; i < 40; i = i + 8) {
                                 // var result = getFiveData;
                                 var dateRaw = result.list[i].dt_txt;
                                 // console.log("raw date: ", dateRaw);
-                                var yyyy = dateRaw.substr(0,4);
-                                var mm = dateRaw.substr(5,2);
-                                var dd = dateRaw.substr(8,2)
-                                var date = mm + '-' + dd + '-' + yyyy;
-                                console.log("date: ", date);
-
-                                // var time
+                                var yyyy = dateRaw.substr(0, 4);
+                                var mm = dateRaw.substr(5, 2);
+                                var dd = dateRaw.substr(8, 2)
+                                var dateOrdered = mm + '-' + dd + '-' + yyyy;
 
                                 //ICON
                                 var icon = document.createElement('img');
                                 var weatherIcon = (result.list[i].weather[0].icon);
                                 var iconURL = (`https://openweathermap.org/img/wn/${weatherIcon}@2x.png`);
                                 icon.src = iconURL;
+
+                                //DATE
+                                var date = document.createElement('div');
+                                var dateDisplay = (`Date: ${dateOrdered}`);
+                                date.innerHTML = dateDisplay;
+                                // console.log(dateDisplay);
+                                
+                                // TEMP
+                                var temp = document.createElement('div');
+                                var fiveDayTemp = (`Temperature: ${result.list[i].main.temp}F`);
+                                temp.innerHTML = fiveDayTemp;
+                                console.log(fiveDayTemp);
+
 
                                 //WIND
                                 var wind = document.createElement('div');
@@ -117,32 +127,16 @@ function getWeather() {
                                 var humidity = (`Humidity: ${result.list[i].main.humidity}%`);
                                 percent.innerHTML = humidity;
 
-
-                                //TEMP
-                                var temp = document.createElement('div');
-                                var fiveDayTemp = (`Temperature: ${result.list[i].main.temp}F`);
-                                temp.innerHTML = fiveDayTemp;
-                                // console.log(fiveDayTemp);
-
                                 //CARD
                                 var card = document.createElement('div');
                                 card.append(icon);
+                                card.append(date);
                                 card.append(wind);
                                 card.append(humidity);
                                 card.append(temp);
 
                                 //CARD
                                 forecast.append(card);
-
-                                // forecast.append(
-                                //     `<div class="card"> 
-                                //     <div class="date">${date}</div>
-                                //     <img src="${iconURL}" />
-                                //     <div class="humidity">${humidity}</div>
-                                //     <div class="temp">${fiveDayTemp}</div>
-                                //     <div class="wind">${windSpeed}</div>
-                                //     </div>`
-                                // )
                             }
                         })
                 }
@@ -170,7 +164,7 @@ function getUV(lat, lon) {
 function setHistory(city) {
     if (cityStorage.indexOf(city) >= 0) {
         return;
-    }   
+    }
     cityStorage.push(city);
 
     localStorage.setItem("cities", JSON.stringify(cityStorage));
