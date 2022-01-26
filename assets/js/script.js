@@ -25,10 +25,10 @@ let forecast = document.getElementById("forecast");
 var cityStorage = [];
 var cityHistoryHTML = document.getElementById("history");
 
-function getWeather() {
-    weatherContainer.innerHTML = "";
+function getWeather(userSearch) {
 
-    let userSearch = fromInput.value;
+
+    // userSearch = fromInput.value;
     let city = userSearch.split(" ").join("+");
     console.log("city: ", city);
     var baseURL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${OWM_apiKey}&units=imperial`;
@@ -41,6 +41,7 @@ function getWeather() {
             if (response.ok) {
                 response.json()
                     .then(function (data) {
+                        weatherContainer.innerHTML = "";
                         weatherContainer.append(bodyToday);
 
                         console.log(data);
@@ -83,6 +84,7 @@ function getWeather() {
                 if (response.ok) {
                     response.json()
                         .then(function (data) {
+                            forecast.innerHTML="";
                             var result = data;
                             console.log('5-day data returned: ', result);
 
@@ -129,6 +131,7 @@ function getWeather() {
 
                                 //CARD
                                 var card = document.createElement('div');
+                                card.classList.add("card");
                                 card.append(icon);
                                 card.append(date);
                                 card.append(wind);
@@ -172,15 +175,19 @@ function setHistory(city) {
 }
 
 function getHistory() {
-    cityHistoryHTML.innerHTML = "";
     var fromLocal = localStorage.getItem("cities")
     if (fromLocal) {
         cityStorage = JSON.parse(fromLocal);
         console.log("cityStorage: ", cityStorage);
     }
+    cityHistoryHTML.innerHTML = "";
     for (var i = 0; i < cityStorage.length; i++) {
         console.log("line 180: ", i);
-        var cityBtn = document.createElement("button")
+        var cityBtn = document.createElement("button");
+        cityBtn.classList.add("btn");
+        cityBtn.classList.add("btn-md");
+        cityBtn.classList.add("btn-primary");
+        
         cityBtn.setAttribute("type", "button");
         cityBtn.setAttribute("data-search", cityStorage[i]);
         cityBtn.textContent = cityStorage[i];
@@ -189,8 +196,12 @@ function getHistory() {
     console.log("cityHistoryHTML: ", cityHistoryHTML);
 }
 
-
-
+function historyBtn(e) {
+    const btn = e.target;
+    cityName = btn.getAttribute("data-search");
+    getWeather(cityName);
+}
+cityHistoryHTML.addEventListener("click", historyBtn);
 // const newLocal = "search-form";
 // let fromLabel = document.getElementById(newLocal);
 
@@ -200,7 +211,8 @@ searchBtn.addEventListener("click", function (event) {
     windEl.innerHTML = "";
     humidityEl.innerHTML = "";
     forecast.innerHTML = "";
-    getWeather();
+    userSearch = fromInput.value;
+    getWeather(userSearch);
     fromInput.value = "";
 
 })

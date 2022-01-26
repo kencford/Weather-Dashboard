@@ -2,6 +2,9 @@ body {
   font-family: 'Open Sans', sans-serif;
   font-size: 16px;
   line-height: 1;
+  border: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 textarea {
@@ -21,61 +24,14 @@ textarea {
   border-bottom: 10px solid black;
 }
 
-/* need to access this in html */
-.description {
-  white-space: pre-wrap;
+button{
+  margin-bottom: 1vh;
+  max-width: 150px;
 }
 
-/* complicated with js - create next to each other thru bootstrap */
-/* set borders / colors */
-.time-block {
-  text-align: center;
-  border-radius: 15px;
-}
-
-/* similar to time block */
-.row {
-  white-space: pre-wrap;
-  height: 80px;
-  border-top: 1px solid white;
-}
-
-.hour {
-  background-color: #ffffff;
-  color: #000000;
-  border-top: 1px dashed #000000;
-}
-
-/* background colors important */
-/* colors change dependent on current time */
-.past {
-  background-color: #d3d3d3;
-  color: white;
-}
-
-.present {
-  background-color: #ff6961;
-  color: white;
-}
-
-.future {
-  background-color: #77dd77;
-  color: white;
-}
-
-/* create a button within html */
-.saveBtn {
-  border-left: 1px solid black;
-  border-top-right-radius: 15px;
-  border-bottom-right-radius: 15px;
-  background-color: #06aed5;
-  color: white;
-}
-
-/* font awsome  "i" --> icon */
-.saveBtn i:hover {
-  font-size: 20px;
-  transition: all 0.3s ease-in-out;
+.card{
+  padding: 2vh 2vw;
+  margin: 5px;
 }
 
 
